@@ -1,0 +1,26 @@
+{
+    "dev": {
+        "app_function": "app.main.app",
+        "aws_region": "us-west-2",
+        "exclude": [
+            "boto3",
+            "dateutil",
+            "botocore",
+            "s3transfer",
+            "concurrent",
+            "pymupdf", 
+            "pymupdf-*.dist-info"
+        ],
+        "profile_name": "default",
+        "project_name": "backend",
+        "runtime": "python3.11",
+        "timeout_seconds": 300,
+        "s3_bucket": "pdf-sustainability-parser-bucket-west-2",
+        "endpoint_configuration": ["REGIONAL"],
+        "memory_size": 8192, 
+        "function_url_enabled": true,
+        "layers": [
+            "arn:aws:lambda:us-west-2:345041079132:layer:BedrockDependencies:5"
+        ]
+    }
+}
