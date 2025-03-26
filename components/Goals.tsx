@@ -57,7 +57,7 @@ const Goals: FC<GoalsProps> = ({ goals }) => {
     return (
         <View style={styles.container}>
             <Text fontSize="$5" color="white" fontWeight={'bold'}>Goals</Text>
-            <YStack padding="$3" gap="$3">
+            <YStack paddingBlock={'$3'} gap="$3">
                 {goalsArray.slice(0, 4).map((goal, index) => (
                     <ListItem padded key={index} style={styles.card} elevation={2}>
                         <YGroup gap="$2" flex={1}>
@@ -73,7 +73,7 @@ const Goals: FC<GoalsProps> = ({ goals }) => {
                                 {goal.status.toLowerCase() === 'not started' && <Progress value={10} size="$5" style={styles.progressBar}>
                                         <Progress.Indicator style={styles.progressIndNS} animation="bouncy" />
                                     </Progress>}
-                                <Text fontSize="$3.2" color="white" style={styles.description}>{goal.description}</Text>
+                                <Text fontSize={'$3'} color="white" style={styles.description}>{goal.description}</Text>
                             </View>
                         </YGroup>
                     </ListItem>

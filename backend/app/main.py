@@ -38,7 +38,8 @@ custom_config = Config(
 
 
 client = boto3.client("bedrock-runtime", region_name="us-west-2", config=custom_config)
-model_id = "us.meta.llama3-2-3b-instruct-v1:0"
+# model_id = "us.meta.llama3-2-3b-instruct-v1:0"
+model_id = "anthropic.claude-3-5-haiku-20241022-v1:0"
 
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 cache_table = dynamodb.Table('SummarizationCache')
@@ -86,7 +87,7 @@ def cache_summary(document_hash, summaries):
                 'Environment': summaries['environment'],
                 'Certifications': summaries['certifications'],
                 'Transparency': summaries['transparency'],
-                'ExpirationTime': int(time.time()) + 86400  # Expires in 24 hours
+                'ExpirationTime': int(time.time()) + 186400  # Expires in > 2 days
             }
         )
     except Exception as e:
@@ -182,20 +183,38 @@ def summarize_step2(aggregated_summaries, category):
             category_name = "Environment"
         case 3:
             label = """Extract all certifications mentioned in the following sustainability report. For each certification, provide:
-                - Certification Name
-                * Issuing Body
-                * Status (Active, Pending, Expired)
-                * Description (brief summary)
+                - {name} 
+                * {issuingBody}
+                * {status} 
+                * {description}
 
+                Replacing {name} with the certification name, {issuingBody} with the organization that issued the certification, 
+                {status} with the current status of the certification, and {description} with a brief summary of the certification.
+                Make sure the status is either labelled as active, pursuing, or expired depending on the certification. 
+                Use exactly the format shown above. An example of this is something like:
+                 - CDP Climate Change A List
+                    * Carbon Disclosure Project (CDP)
+                    * Active
+                    * Recognition for comprehensive climate change reporting and leadership in environmental transparency
                 """
             category_name = "Certifications"
         case 4: 
             label = """Extract and structure the transparency details from the following sustainability report. For each transparency item, please provide:
-            1. Governance Practices: Describe the specific governance policies and oversight mechanisms in place.
-            2. Reporting Frequency: Specify how often transparency reports or audits occur.
-            3. Accountability Mechanisms: Detail the processes that ensure accountability (e.g., external audits, stakeholder reviews).
-            4. Setbacks: List any challenges or setbacks that have affected transparency.
-            Present the output as a numbered list with each item having these four clearly labeled sections.
+                1. {GovernancePractices}
+                2. {ReportingFrequency}
+                3. {AccountabilityMechanisms}
+                4. {Setbacks}
+
+                Replacing {GovernancePractices} with the governance practices, 
+                {ReportingFrequency} with the reporting frequency, 
+                {AccountabilityMechanisms} with the accountability mechanisms, 
+                and {Setbacks} with the setbacks faced by the company.
+                Use the exact format shown above. Example format:
+                
+                1. The company has a board-level committee that oversees sustainability initiatives.
+                2. The company releases an annual sustainability report.
+                3. External audits are conducted annually.
+                4. The company faced challenges in data collection due to the pandemic.
             """
             category_name = "Transparency"
         case _:
@@ -217,6 +236,7 @@ def summarize_step2(aggregated_summaries, category):
         "1. Do not include any introduction or conclusion—only list the summary points.\n"
         "2. Each summary point must begin on a new line with a hyphen followed by a space (\"- \").\n"
         "3. Each point should be concise, specific, and focus on measurable outcomes and progress.\n"
+        "4. Each point should be understandable by a mostly general audience.\n"
         f"4. Use the provided guidelines exactly as given: {label}\n\n"
         "Below is the aggregated summary text:\n\n"
         f"{aggregated_summaries}"

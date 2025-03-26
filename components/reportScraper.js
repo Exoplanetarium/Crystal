@@ -19,7 +19,7 @@ export async function reportScraper(companyName) {
     const items = response.data.items || [];
 
     // Get only the first 3 items
-    const results = items.slice(0, 3).map(item => ({
+    const results = items.slice(0, 5).map(item => ({
       title: item.title,
       link: item.link,
     }));
@@ -28,8 +28,16 @@ export async function reportScraper(companyName) {
       const link = item.link.toLowerCase();
       const title = item.title.toLowerCase();
       console.log('Link:', link);
+
+      if (link.includes('impact') || title.includes('impact')) {
+        return true;
+      }
+
+      if (link.includes('sustainability') || title.includes('sustainability')) {
+        return true;
+      }
+
       if (link.includes('2024') || title.includes('2024')) {
-        console.log('Found 2024:', item);
         return true;
       }
 

@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import { View, Text, YGroup, Accordion, Square, SizableText } from 'tamagui';
+import { View, Text, YGroup, Accordion, Square } from 'tamagui';
 import { ChevronDown } from '@tamagui/lucide-icons';
 
 interface Transparency {
@@ -67,7 +67,7 @@ const Transparency: FC<TransparencyProps> = ({ transparency }) => {
       <YGroup>
         <Accordion type="multiple" style={styles.accordionContainer}>
           {sections.map((section, index) => (
-            <Accordion.Item key={index} value={`section-${index}`} style={styles.listItem}>
+            <Accordion.Item key={index} value={`section-${index}`}>
               <Accordion.Trigger style={styles.listItem}>
                 {({
                   open,
@@ -75,18 +75,20 @@ const Transparency: FC<TransparencyProps> = ({ transparency }) => {
                   open: boolean
                 }) => (
                   <>
-                    <View>
-                      <Text style={styles.sectionTitle} fontSize={'$3'} numberOfLines={1}>{section.title}</Text>
-                      <Square animation="quick" rotate={open ? '180deg' : '0deg'}>
-                        <ChevronDown size="$1"/>
-                      </Square>
-                    </View>
+                    <Text style={styles.sectionTitle} fontSize={'$3'} numberOfLines={1}>
+                      {section.title}
+                    </Text>
+                    <Square animation="quick" rotate={open ? '180deg' : '0deg'}>
+                        <ChevronDown size="$1" color={'white'}/>
+                    </Square>
                   </>
                 )}
               </Accordion.Trigger>
-              <Accordion.Content style={styles.listItem}>
-                <Text style={styles.content}>{section.content}</Text>
-              </Accordion.Content>
+              <Accordion.HeightAnimator animation="medium">
+                <Accordion.Content animation="medium" style={styles.contentContainer}>
+                  <Text style={styles.content}>{section.content}</Text>
+                </Accordion.Content>
+              </Accordion.HeightAnimator>
             </Accordion.Item>
           ))}
         </Accordion>
@@ -117,9 +119,14 @@ const styles = StyleSheet.create({
     color: '#ffffffa2',
     padding: 10,
   },
+  contentContainer: {
+    backgroundColor: '#252e43',
+  },
   listItem: {
     color: 'white',
     backgroundColor: '#252e43',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   accordionContainer: {
     borderWidth: 0,

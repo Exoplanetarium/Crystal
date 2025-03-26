@@ -20,7 +20,6 @@ const Certifications: FC<CertProps> = ({ certifications }) => {
 
     useEffect(() => {
         if (certifications) {
-            console.log(certifications);
             const splitCerts = certifications.split('\n\n').filter(cert => cert.trim().startsWith('-'));
             const parsedCerts: Certification[] = splitCerts.map(cert => {
                 // remove uneeded characters
@@ -31,13 +30,22 @@ const Certifications: FC<CertProps> = ({ certifications }) => {
                 const header = headerMatch ? headerMatch[1].trim() : fallBackHeader ? fallBackHeader[1].trim() : '';
 
                 if (header === 'Certifications') {
-                    return { header: '', issuingBody: '', dateObtained: '', dataExpiration: '', status: '', description: '' };
+                    return {
+                        header: '',
+                        issuingBody: '',
+                        dateObtained: '',
+                        dataExpiration: '',
+                        status: '',
+                        description: '',
+                    };
                 }
 
                 // Extract issuing body
                 const issuingBodyMatch = cert.match(/Issuing Body:(.*)\n/i);
-                const issuingBody = issuingBodyMatch ? issuingBodyMatch[1].trim() : '';
-
+                const fallbackIssuingBody = cert.match(/\*(.*)\n/i);
+                const issuingBody = issuingBodyMatch ? issuingBodyMatch[1].trim()
+                    : fallbackIssuingBody ? fallbackIssuingBody[1].trim() : '';
+                cert = cert.replace(/\*(.*)\n/i, '');
                 // // Extract date obtained
                 // const dateObtainedMatch = cert.match(/Date Obtained:(.*?)\n/i);
                 // const dateObtained = dateObtainedMatch ? dateObtainedMatch[1].trim() : '';
@@ -48,13 +56,17 @@ const Certifications: FC<CertProps> = ({ certifications }) => {
 
                 // Extract status
                 const statusMatch = cert.match(/Status:(.*)\n/i);
-                const fallBackStatus = cert.match(/Status:(.*)\n/i);
-                const status = statusMatch ? statusMatch[1].trim() : fallBackStatus ? fallBackStatus[1].trim() : '';
+                const fallBackStatus = cert.match(/\*(.*)\n/i);
+                const status = statusMatch ? statusMatch[1].trim()
+                    : fallBackStatus ? fallBackStatus[1].trim() : '';
+                cert = cert.replace(/\*(.*)\n/i, '');
 
                 // Extract description
                 const descriptionMatch = cert.match(/Description:(.*)/i);
-                console.log(descriptionMatch);
-                const description = descriptionMatch ? descriptionMatch[1].trim() : '';
+                const fallbackDescription = cert.match(/\*(.*)/i);
+                const description = descriptionMatch ? descriptionMatch[1].trim()
+                    : fallbackDescription ? fallbackDescription[1].trim() : '';
+
                 return { header, issuingBody, status, description };
             });
 
@@ -62,17 +74,18 @@ const Certifications: FC<CertProps> = ({ certifications }) => {
                 !Object.values(obj).every(val => val === '')
             );
 
-            console.log(trimmedCerts);
+            // console.log(certifications);
+            // console.log(trimmedCerts);
             setCertArray(trimmedCerts);
         }
     }, [certifications]);
 
     return (
         <View style={styles.container}>
-            <Text fontSize="$5" color="white" fontWeight={'bold'} marginLeft={7}>Certifications</Text>
+            <Text fontSize="$5" color="white" style={styles.certHeader}>Certifications</Text>
             <ScrollView horizontal>
                 <View style={styles.contentContainer}>
-                    <XStack padding="$3" gap="$3">
+                    <XStack paddingBlock={'$3'} gap="$3">
                         {certArray.map((cert, index) => (
                             <ListItem padded key={index} style={styles.card} elevation={2}>
                                 <YGroup gap="$2" flex={1}>
@@ -80,7 +93,10 @@ const Certifications: FC<CertProps> = ({ certifications }) => {
                                         <Text fontSize="$4" color="white" style={styles.header}>{cert.header}</Text>
                                         <Text fontSize="$3" color="white" style={styles.listItem}>Issuing Body: {cert.issuingBody}</Text>
                                         <XGroup gap="$2">
-                                            <Separator vertical borderWidth={1} borderColor={cert.status.toLowerCase() === 'active' ? '#96ff81' : 'white'}/>
+                                            <Separator vertical borderWidth={1} borderColor={cert.status.toLowerCase() === 'active'
+                                                ? '#96ff81' : cert.status.toLowerCase() === 'pending'
+                                                ? '#fbea53' : cert.status.toLowerCase() === 'expired'
+                                                ? '#f06464' : 'white'}/>
                                             <Text fontSize="$3" color="white" style={styles.listItem}>{cert.status}</Text>
                                         </XGroup>
                                         <Text fontSize="$3" color="white" style={styles.listItem}>{cert.description}</Text>
@@ -107,6 +123,10 @@ const styles = StyleSheet.create({
     },
     header: {
         fontWeight: 'bold',
+    },
+    certHeader: {
+        fontWeight: 'bold',
+        marginLeft: 7,
     },
     card: {
         backgroundColor: '#252e43',
