@@ -64,8 +64,8 @@ const Transparency: FC<TransparencyProps> = ({ transparency }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title} fontSize="$5">Transparency</Text>
-      <YGroup>
-        <Accordion type="multiple" style={styles.accordionContainer}>
+      <YGroup style={styles.accordionContainer}>
+        <Accordion type="multiple">
           {sections.map((section, index) => (
             <Accordion.Item key={index} value={`section-${index}`}>
               <Accordion.Trigger style={styles.listItem}>
@@ -99,7 +99,6 @@ const Transparency: FC<TransparencyProps> = ({ transparency }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 10,
     marginVertical: 15,
     flex: 1,
   },
@@ -107,7 +106,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     marginBottom: 20,
-    marginLeft: 10,
+    marginLeft: 7,
   },
   sectionTitle: {
     color: 'white',
@@ -131,6 +130,7 @@ const styles = StyleSheet.create({
   accordionContainer: {
     borderWidth: 0,
     borderColor: 'transparent',
+    borderRadius: 10,
   },
 });
 

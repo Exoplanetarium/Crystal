@@ -56,10 +56,10 @@ const Environment: FC<EnvProps> = ({ environment }) => {
 
     return (
         <View style={styles.container}>
-            <Text fontSize="$5" color="white" fontWeight={'bold'} marginLeft={7}>Environment</Text>
+            <Text fontSize="$5" color="white" fontWeight={'bold'} marginStart={7}>Environment</Text>
             <ScrollView horizontal>
-                <XStack padding="$3" gap="$3" marginRight={50}>
-                    {envArray.slice(0, 4).map((env, index) => {
+                <XStack paddingBlock="$3" gap="$3" marginEnd={50}>
+                    {envArray.slice(0, 3).map((env, index) => {
                         const value = +env.data; // convert string to number
                         const actualSlice = {
                             value,
@@ -78,7 +78,7 @@ const Environment: FC<EnvProps> = ({ environment }) => {
                                 <YGroup gap="$2">
                                     <View>
                                         <Text fontSize="$4" color="white" style={styles.header}>{env.header}</Text>
-                                        <Separator marginTop={15} width={'90%'} alignSelf="center" borderColor={'#1b2130'}/>
+                                        <Separator style={styles.separator}/>
                                         <View height={'60%'} style={styles.chartContainer}>
                                             <Text fontSize="$4" color="white" style={styles.label}>{env.data}%</Text>
                                             <PolarChart
@@ -105,8 +105,8 @@ const Environment: FC<EnvProps> = ({ environment }) => {
                                                 </Pie.Chart>
                                             </PolarChart>
                                         </View>
-                                        <Separator marginBottom={15} width={'90%'} alignSelf="center" borderColor={'#1b2130'}/>
-                                        <Text fontSize="$3.2" color="white" style={styles.description}>{env.description}</Text>
+                                        <Separator style={styles.separator}/>
+                                        <Text fontSize={'$3'} color="white" style={styles.description}>{env.description}</Text>
                                     </View>
                                 </YGroup>
                             </ListItem>
@@ -129,6 +129,12 @@ const styles = StyleSheet.create({
     },
     description: {
         color: '#ffffffb8',
+    },
+    separator: {
+        marginVertical: 15,
+        width: '90%',
+        alignSelf: 'center',
+        borderColor: '#1b2130',
     },
     card: {
         backgroundColor: '#252e43',

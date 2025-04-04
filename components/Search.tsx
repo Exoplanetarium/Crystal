@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
-import { Button, View, Input, Text, Spinner, YGroup, Separator } from 'tamagui';
+import { Button, View, Input, Text, Spinner, YGroup, Separator, XStack } from 'tamagui';
 import { reportScraper } from './reportScraper';
 import RecentSearches from './RecentSearches';
 import ReportAnalysis from './ReportAnalysis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ChevronLeft } from '@tamagui/lucide-icons';
 
 const RECENT_SEARCHES_KEY = 'RECENT_SEARCHES';
 const { height, width } = Dimensions.get('window');
@@ -107,41 +108,43 @@ const Search = () => {
 
 	return (
 		<View style={styles.container}>
-			{!hasSearched ? (
-				<>
-					<YGroup>
-						<Input
-						size="$4"
-						onChangeText={(name) => setCompanyName(name)}
-						placeholder="Enter company name"
-						value={companyName}
-						/>
-						<Button onPress={handleSearch}>Search</Button>
-						{!isEmpty && (
+			<YGroup>
+				<Input
+					size="$4"
+					onChangeText={(name) => setCompanyName(name)}
+					placeholder="Enter company name"
+					value={companyName}
+				/>
+				<Button onPress={handleSearch}>Search</Button>
+				{(!hasSearched) ? (
+					(!isEmpty) && (
+						<>
 							<RecentSearches
 								onSelect={handleRecentSearchSelect}
 								loadRecentSearches={loadRecentSearches}
 								recentSearches={recentSearches}
 								recentCompanies={recentCompanies}
 							/>
-						)}
-					</YGroup>
-					<Button onPress={deleteHistory} style={styles.deleteButton}>
-						<Text color="white">Delete History</Text>
-					</Button>
-				</>
-			) : (
-				<>
-					<Button onPress={handleBack} style={styles.backButton}>
-						<Text color="white">Back to Search</Text>
-					</Button>
-					<View style={styles.reportContainer}>
-						<Text style={styles.header}>{companyName}</Text>
-						<Separator style={styles.headerSeparator} />
-						<ReportAnalysis report={report} />
-					</View>
-				</>
-			)}
+							<Button onPress={deleteHistory} style={styles.deleteButton}>
+								<Text color="white">Delete History</Text>
+							</Button>
+						</>
+					)
+				) : (
+					<>
+						<View>
+							<XStack style={styles.headerContainer}>
+								<Button onPress={handleBack} style={styles.backButton}>
+									<ChevronLeft size={'$2'} color={'white'}/>
+								</Button>
+								<Text fontSize="$5" paddingBlock={'$3'} color="white" style={styles.header}>{companyName}</Text>
+							</XStack>
+							<Separator style={styles.headerSeparator} />
+						</View>
+						{(!loading) && <ReportAnalysis report={report} />}
+					</>
+				)}
+			</YGroup>
 			{loading && (
 				<View style={styles.spinnerContainer}>
 					<Spinner size="large" color="lightblue" gap="$2" />
@@ -166,11 +169,14 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		fontWeight: 'bold',
-		marginBottom: 5,
 		textAlign: 'center',
 	},
+	headerContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 	headerSeparator: {
-		paddingVertical: 5,
 		width: '100%',
 		alignSelf: 'center',
 		borderColor: '#ffffff',
@@ -183,13 +189,11 @@ const styles = StyleSheet.create({
 		borderColor: '#ffffff35',
 	},
 	backButton: {
-    backgroundColor: '#2c3e50',
-    marginTop: 10,
-    alignSelf: 'center',
-  },
-  reportContainer: {
-    flex: 1,
-    marginTop: 20,
+    backgroundColor: 'transparent',
+		paddingHorizontal: 10,
+		position: 'absolute',
+		alignSelf: 'center',
+		left: 5,
   },
 	deleteButton: {
 		backgroundColor: '#2c3e50',

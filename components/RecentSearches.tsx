@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import { StyleSheet } from 'react-native';
 import { View, Text, ScrollView, ListItem, YGroup, Accordion, Square, Button, Separator } from 'tamagui';
 import { ChevronDown } from '@tamagui/lucide-icons';
@@ -23,7 +23,7 @@ interface RecentSearchesProps {
 	recentCompanies: string[];
 }
 
-const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, loadRecentSearches, recentSearches, recentCompanies }) => {
+const RecentSearches: FC<RecentSearchesProps> = ({ onSelect, loadRecentSearches, recentSearches, recentCompanies }) => {
 	// Load recent searches from AsyncStorage when the component mounts
 	useEffect(() => {
 		loadRecentSearches();

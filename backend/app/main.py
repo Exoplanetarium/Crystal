@@ -174,11 +174,16 @@ def summarize_step2(aggregated_summaries, category):
             category_name = "Goals"
         case 2:
             label = """
-            Provide 4 specific eco-impact and sustainability efforts sectioned into energy efficiency, resource efficiency, waste reduction, and water replenishment. Only if the report does not mention one of these sections, please add a different one of your choosing that is included in the report. However, make sure to always have 4 total sections. If the report says they will do something 'by' some date, it means they haven't done it yet, and you should NOT include it in your percentage.
-            Include progress other than set as goals, prioritizing measureable outcomes that most align with each section. There should only be one bullet point in each section.  Organize it by section and provide all parameters within the curly braces (not including the curly braces): 
-            - {section}: ({percentage}) {description}. 
-            Replace {section} with the section header, {percentage} with the specific data point for that specific section (use positive percentages (NOT negative) for positive impacts, AND put the percentage in parenthesis), and {description} with a brief description of the data that is concise and LESS than 100 characters.
-            Above all, prioritize ACCURACY with percentages, always use the report's provided numbers, and only estimate when numbers are not provided. However, if the report does not provide any numbers, you can estimate the percentage based on the information given. NEVER use N/A or some other placeholder for no data, and NEVER use Environment as a header
+            Provide 3 specific eco-impact and sustainability efforts, each focused on a distinct emissions scope: Scope 1, Scope 2, and Scope 3 emissions. 
+            If the report does not mention one of these scopes, replace the missing section with another eco-impact initiative found in the report, ensuring you always have 3 total sections. 
+            If the report says they will do something 'by' a certain date, it means the action is not yet completed, so do not include it in your percentage calculation.
+            Include progress metrics beyond merely set goals, prioritizing measurable outcomes that align best with each section. There should be exactly one bullet point per section. Organize the output by section and format each bullet point as follows (replace the parameters within the curly braces, but do not include the braces):
+
+            - {section}: ({percentage}) {description}.
+
+            Replace {section} with the section header ("Scope 1", "Scope 2", or "Scope 3"), {percentage} with the specific data point for that section (must be between 0 and 100 in parentheses), and {description} with a concise description (less than 100 characters) of the measured impact.
+
+            Above all, prioritize ACCURACY with percentages by always using the report's provided numbers. Only estimate when numbers are absent, and never use placeholders like N/A. Also, do not use "Environment" as a header.
             """
             category_name = "Environment"
         case 3:

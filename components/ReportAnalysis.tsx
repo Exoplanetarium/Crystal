@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { StyleSheet } from 'react-native';
 import { ScrollView, YGroup, Separator } from 'tamagui';
 import Goals from './Goals';
@@ -23,7 +23,7 @@ interface ReportProps {
     report: Report;
 }
 
-const ReportAnalysis: React.FC<ReportProps> = ({ report }) => {
+const ReportAnalysis: FC<ReportProps> = ({ report }) => {
     const goals = report.goals;
     const environment = report.environment;
     const certifications = report.certifications;
@@ -31,7 +31,7 @@ const ReportAnalysis: React.FC<ReportProps> = ({ report }) => {
     // console.log(r);
     return (
         <>
-            <ScrollView>
+            <ScrollView marginBlockEnd={150}>
                 <YGroup>
                     <Goals goals={goals} />
                     <Separator style={styles.seperator}/>
