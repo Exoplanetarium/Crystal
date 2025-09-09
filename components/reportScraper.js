@@ -6,7 +6,8 @@ const ENDPOINT = 'https://ffzv4aia78.execute-api.us-west-2.amazonaws.com/dev/ext
 
 export async function reportScraper(companyName) {
 
-  const searchQuery = encodeURIComponent(`${companyName} sustainability report 2024 filetype:pdf`);
+  const currentYear = new Date().getFullYear();
+  const searchQuery = encodeURIComponent(`${companyName} sustainability report ${currentYear} filetype:pdf`);
   const url = `https://www.googleapis.com/customsearch/v1?q=${searchQuery}&key=${API_KEY}&cx=${CX}`;
 
   try {
@@ -29,26 +30,37 @@ export async function reportScraper(companyName) {
       const title = item.title.toLowerCase();
       console.log('Link:', link);
 
-      if (link.includes('impact') || title.includes('impact')) {
-        return true;
-      }
+      if (title.includes(companyName.toLowerCase()) || link.includes(companyName.toLowerCase())) {
+        if (link.includes('impact') || title.includes('impact')) {
+          return true;
+        }
 
-      if (link.includes('sustainability') || title.includes('sustainability')) {
-        return true;
-      }
+        if (link.includes('sustainability') || title.includes('sustainability')) {
+          return true;
+        }
 
-      if (link.includes('2024') || title.includes('2024')) {
-        return true;
-      }
+        if (link.includes(currentYear.toString()) || title.includes(currentYear.toString())) {
+          return true;
+        }
 
-      return link.includes('2023') || title.includes('2023');
+        return link.includes((currentYear - 1).toString()) || title.includes((currentYear - 1).toString());
+      }
     });
 
-    console.log('link: ' + foundItem.link);
-
     if (!foundItem) {
-      throw new Error('No suitable PDF found');
+      return {};
     }
+
+    // Add this before calling the Lambda
+    console.log('Testing PDF URL:', foundItem.link);
+    try {
+      const testResponse = await axios.head(foundItem.link);
+      console.log('PDF accessible:', testResponse.status);
+    } catch (err) {
+      console.log('PDF not accessible:', err.message);
+    }
+
+    console.log('link: ' + foundItem.link);
 
     const parserResponse = await axios.post(
       ENDPOINT,

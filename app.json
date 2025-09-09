@@ -1,4 +1,20 @@
 {
   "name": "Crystal",
-  "displayName": "Crystal"
+  "extra": {
+    "eas": {
+      "projectId": "50eb9478-9d0a-458e-89d0-ce35580c43a8"
+    }
+  },
+  "icon": "./images/Crystal_LOGO.jpg",
+  "android": {
+    "package": "com.exoplanet.crystal",
+    "adaptiveIcon": {
+      "foregroundImage": "./images/Crystal_LOGO.jpg",
+      "backgroundColor": "#ffffff"
+    }
+  },
+  "plugins": [
+    "expo-asset"
+  ],
+  "owner": "exoplanet"
 }

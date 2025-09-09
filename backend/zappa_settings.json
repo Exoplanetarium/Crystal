@@ -17,7 +17,7 @@
         "timeout_seconds": 300,
         "s3_bucket": "pdf-sustainability-parser-bucket-west-2",
         "endpoint_configuration": ["REGIONAL"],
-        "memory_size": 8192, 
+        "memory_size": 10240, 
         "function_url_enabled": true,
         "layers": [
             "arn:aws:lambda:us-west-2:345041079132:layer:BedrockDependencies:5"

@@ -78,3 +78,11 @@ AWS access key.txt
 
 # .env file
 .env
+
+# Expo
+.expo
+dist/
+web-build/
+
+# android app files
+*.aab

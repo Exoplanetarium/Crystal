@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 import { Button, View, Input, Text, Spinner, YGroup, Separator, XStack } from 'tamagui';
 import { reportScraper } from './reportScraper';
@@ -31,18 +31,29 @@ const Search = () => {
 	const [recentSearches, setRecentSearches] = useState<Report[]>([]);
 	const [hasSearched, setHasSearched] = useState(false);
 	const [isEmpty, setIsEmpty] = useState(false);
+	const [_isLoadingRecent, setIsLoadingRecent] = useState(true);
+
+	useEffect(() => {
+        loadRecentSearches();
+    }, []);
 
 	const loadRecentSearches = async () => {
 		try {
+			setIsLoadingRecent(true);
 			const stored = await AsyncStorage.getItem(RECENT_SEARCHES_KEY);
 			if (stored) {
 				const parsed = JSON.parse(stored);
 				setRecentSearches(parsed.reports || []);
 				setRecentCompanies(parsed.companies || []);
-			}
+				setIsEmpty(false);
+			} else {
+                setIsEmpty(true);
+            }
 		} catch (error) {
 			console.error('Error loading recent searches:', error);
-		}
+		} finally {
+            setIsLoadingRecent(false);
+        }
 	};
 
 	// adds a new search to recentSearches and recentCompanies
@@ -87,6 +98,13 @@ const Search = () => {
 		setHasSearched(true);
 		setLoading(true);
 		const fetchedReport = await reportScraper(companyName);
+		if (!fetchedReport) {
+			return (
+				<View style={styles.spinnerContainer}>
+					<Text color="white">No report found for {companyName}</Text>
+				</View>
+			);
+		}
 		setReport(fetchedReport);
 		addRecentSearch(fetchedReport, companyName);
 		setLoading(false);
@@ -114,6 +132,7 @@ const Search = () => {
 					onChangeText={(name) => setCompanyName(name)}
 					placeholder="Enter company name"
 					value={companyName}
+					style={styles.input}
 				/>
 				<Button onPress={handleSearch}>Search</Button>
 				{(!hasSearched) ? (
@@ -121,7 +140,6 @@ const Search = () => {
 						<>
 							<RecentSearches
 								onSelect={handleRecentSearchSelect}
-								loadRecentSearches={loadRecentSearches}
 								recentSearches={recentSearches}
 								recentCompanies={recentCompanies}
 							/>
@@ -162,6 +180,10 @@ const styles = StyleSheet.create({
 		height: height,
 		width: width,
 	},
+	input: {
+		borderTopRightRadius: 0,
+		borderTopLeftRadius: 0,
+	},
 	spinnerContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -189,12 +211,12 @@ const styles = StyleSheet.create({
 		borderColor: '#ffffff35',
 	},
 	backButton: {
-    backgroundColor: 'transparent',
+		backgroundColor: 'transparent',
 		paddingHorizontal: 10,
 		position: 'absolute',
 		alignSelf: 'center',
 		left: 5,
-  },
+	},
 	deleteButton: {
 		backgroundColor: '#2c3e50',
 		marginTop: 10,

@@ -140,7 +140,7 @@ def summarize_step1(chunk):
         "Summarize the following text to highlight the company's"
         "overall sustainability efforts, goals, and progress"
         "focusing on the key themes, priorities, and sustainability efforts mentioned."
-        "Focus on highlighting broad goals, environmental impacts, certifications, and governance practices" 
+        "Focus on highlighting broad goals, numerical emissions values (in terms of scope 1, 2, 3), certifications, and governance practices. Note that numerical data may be in data tables, so make sure to extract them." 
         "Keep the summary clear and concise." 
         "Present your output as only one distinct bullet point.\n\n"
         f"{chunk}"
@@ -171,19 +171,17 @@ def summarize_step2(aggregated_summaries, category):
             The brief descriptions should be less than 120 characters. Also make sure the header is no more than 5 words. 
             A great example could be: - Reduce Waste to Landfill: Completed (2023) 90% diversion from landfills achieved.
             """
-            category_name = "Goals"
+            category_name = "Goals"        
         case 2:
             label = """
-            Provide 3 specific eco-impact and sustainability efforts, each focused on a distinct emissions scope: Scope 1, Scope 2, and Scope 3 emissions. 
-            If the report does not mention one of these scopes, replace the missing section with another eco-impact initiative found in the report, ensuring you always have 3 total sections. 
-            If the report says they will do something 'by' a certain date, it means the action is not yet completed, so do not include it in your percentage calculation.
-            Include progress metrics beyond merely set goals, prioritizing measurable outcomes that align best with each section. There should be exactly one bullet point per section. Organize the output by section and format each bullet point as follows (replace the parameters within the curly braces, but do not include the braces):
-
-            - {section}: ({percentage}) {description}.
-
-            Replace {section} with the section header ("Scope 1", "Scope 2", or "Scope 3"), {percentage} with the specific data point for that section (must be between 0 and 100 in parentheses), and {description} with a concise description (less than 100 characters) of the measured impact.
-
-            Above all, prioritize ACCURACY with percentages by always using the report's provided numbers. Only estimate when numbers are absent, and never use placeholders like N/A. Also, do not use "Environment" as a header.
+            Extract Scope 1, 2, and 3 emissions data from the following text. For each scope, provide:
+            - Scope {scope}: ({value} {unit}) {description}
+            Replace {scope} with the scope number (1, 2, or 3), {value} with the numerical value of emissions, {unit} with the unit of measurement (e.g., metric tons CO2e), and {description} with a description of what the scope covers.
+            Make sure to include all three scopes if they are present in the text. DO NOT include emissions data that combines multiple scopes, any sub-scope emissions, or any other emissions data that does not clearly specify the scope.
+            For example, this would be enough:
+            - Scope 1: (1000 metric tons CO2e) Direct emissions from owned and controlled sources
+            - Scope 2: (500 metric tons CO2e) Indirect emissions from purchased electricity, steam, heating, and cooling
+            - Scope 3: (50000 metric tons CO2e) All other indirect emissions
             """
             category_name = "Environment"
         case 3:
@@ -196,31 +194,31 @@ def summarize_step2(aggregated_summaries, category):
                 Replacing {name} with the certification name, {issuingBody} with the organization that issued the certification, 
                 {status} with the current status of the certification, and {description} with a brief summary of the certification.
                 Make sure the status is either labelled as active, pursuing, or expired depending on the certification. 
-                Use exactly the format shown above. An example of this is something like:
-                 - CDP Climate Change A List
+                Use exactly the format shown above. An example of this is something like:                 - CDP Climate Change A List
                     * Carbon Disclosure Project (CDP)
                     * Active
                     * Recognition for comprehensive climate change reporting and leadership in environmental transparency
                 """
             category_name = "Certifications"
         case 4: 
-            label = """Extract and structure the transparency details from the following sustainability report. For each transparency item, please provide:
-                1. {GovernancePractices}
-                2. {ReportingFrequency}
-                3. {AccountabilityMechanisms}
-                4. {Setbacks}
+            label = """
+                Score transparency on three criteria (0-100 each) using this EXACT template:
+                TEMPLATE:
+                Information Disclosure: ({score}) {description}
+                Clarity: ({score}) {description}  
+                Accuracy: ({score}) {description}
 
-                Replacing {GovernancePractices} with the governance practices, 
-                {ReportingFrequency} with the reporting frequency, 
-                {AccountabilityMechanisms} with the accountability mechanisms, 
-                and {Setbacks} with the setbacks faced by the company.
-                Use the exact format shown above. Example format:
-                
-                1. The company has a board-level committee that oversees sustainability initiatives.
-                2. The company releases an annual sustainability report.
-                3. External audits are conducted annually.
-                4. The company faced challenges in data collection due to the pandemic.
-            """
+                EXAMPLE:
+                Information Disclosure: (75) Comprehensive metrics disclosed with some gaps in verification
+                Clarity: (82) Well-structured data presentation with clear terminology throughout
+                Accuracy: (68) Generally accurate data but limited third-party verification present
+
+                Scoring bands: 80-100=Excellent, 60-79=Good, 40-59=Fair, 20-39=Poor, 0-19=Very Poor
+                                
+                Information Disclosure: Rate completeness of data, metrics, targets, and methodologies
+                Clarity: Rate how well-structured and understandable the information is
+                Accuracy: Rate data reliability and verification level
+                """
             category_name = "Transparency"
         case _:
             label = "General"
@@ -245,15 +243,14 @@ def summarize_step2(aggregated_summaries, category):
         f"4. Use the provided guidelines exactly as given: {label}\n\n"
         "Below is the aggregated summary text:\n\n"
         f"{aggregated_summaries}"
-    )
-
+    )   
     response = client.converse(
         modelId=model_id,
         messages=[
             {"role": "user", "content": [{"text": user_prompt}]}
         ],
         inferenceConfig={
-            "maxTokens": 400, 
+            "maxTokens": 300 if category == 4 else 400, 
             "temperature": 0.2,
         },
     )
@@ -262,7 +259,7 @@ def summarize_step2(aggregated_summaries, category):
     return response["output"]["message"]["content"][0]["text"]
 
 # Split text into smaller chunks
-def split_text(text, max_length=18000):
+def split_text(text, max_length=25000):
     chunks = []
     current_chunk = ""
     for line in text.splitlines():
@@ -274,9 +271,8 @@ def split_text(text, max_length=18000):
     return chunks
 
 # Summarize large document using parallel processing (Step 1)
-def summarize_large_document_step1(text, max_chunks=60, time_limit=15, ):
+def summarize_large_document_step1(text, max_chunks=40, time_limit=15, ):
     chunks = split_text(text)[:max_chunks]
-
     start_time = time.time()
     processed_chunks = 0
 
