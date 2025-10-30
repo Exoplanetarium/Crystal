@@ -1,7 +1,9 @@
 import { defaultConfig } from '@tamagui/config/v4';
-import { createTamagui } from '@tamagui/core';
+import { createTamagui } from 'tamagui';
 
-export const config = createTamagui(defaultConfig);
+const config = createTamagui(defaultConfig);
+
+export default config;
 
 type CustomConfig = typeof config
 

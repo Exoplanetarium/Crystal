@@ -56,7 +56,7 @@ const Goals: FC<GoalsProps> = ({ goals }) => {
 
     return (
         <View style={styles.container}>
-            <Text fontSize="$5" color="white" fontWeight={'bold'}>Goals</Text>
+            <Text fontSize="$6" color="white" fontWeight={'bold'}>Goals</Text>
             <YStack paddingBlock={'$3'} gap="$3">
                 {goalsArray.slice(0, 4).map((goal, index) => (
                     <ListItem padded key={index} style={styles.card} elevation={2}>

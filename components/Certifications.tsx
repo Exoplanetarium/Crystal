@@ -81,7 +81,7 @@ const Certifications: FC<CertProps> = ({ certifications }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text fontSize="$5" color="white" style={styles.certHeader}>Certifications</Text>
+			<Text fontSize="$6" color="white" style={styles.certHeader}>Certifications</Text>
 			<ScrollView horizontal>
 				<View style={styles.contentContainer}>
 					<XStack paddingBlock={'$3'} gap="$3">

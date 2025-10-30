@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crystal Sustainability</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 320px;
+        min-height: 200px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          sans-serif;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      h1 {
+        font-size: 20px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0px;
+      }
+
+      .icon {
+        width: 70px;
+        height: 70px;
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 1.6;
+        opacity: 0.9;
+        margin-bottom: 20px;
+      }
+
+      .stats {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 16px;
+      }
+
+      .stat-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+
+      .stat-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .stat-label {
+        opacity: 0.8;
+      }
+
+      .stat-value {
+        font-weight: 600;
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+      }
+
+      .primary-btn {
+        background: white;
+        color: #667eea;
+      }
+
+      .secondary-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      .footer {
+        margin-top: 16px;
+        text-align: center;
+        font-size: 11px;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      <img src="icons/icon_transparent.png" alt="Crystal" class="icon" />
+      Crystal
+    </h1>
+
+    <p>See sustainability ratings while you shop online.</p>
+
+    <div class="stats" id="stats">
+      <div class="stat-item">
+        <span class="stat-label">Cached Companies:</span>
+        <span class="stat-value" id="cached-count">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Cache Valid Until:</span>
+        <span class="stat-value" id="cache-expiry">--</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary-btn" id="refresh-btn">Refresh Cache</button>
+      <button class="secondary-btn" id="clear-btn">Clear Data</button>
+    </div>
+
+    <div class="footer">Crystal v1.0.0 • Powered by AI</div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

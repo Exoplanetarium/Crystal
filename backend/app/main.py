@@ -12,28 +12,25 @@ import sys
 import hashlib
 import gzip
 
-# Configure logging
+# logs*
 logging.basicConfig(
-    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    level=logging.INFO, 
     format='%(asctime)s %(levelname)s %(name)s %(message)s',  
     handlers=[
-        logging.StreamHandler(sys.stdout)  # Ensure logs are sent to stdout for CloudWatch
+        logging.StreamHandler(sys.stdout) 
     ]
 )
 
-# Create a logger for your application
 logger = logging.getLogger(__name__)
-
-# Flask app setup
 app = Flask(__name__)
 
-# Define custom botocore configuration
+# Define config
 custom_config = Config(
     retries = {
         'max_attempts': 10,
         'mode': 'standard'
     },
-    max_pool_connections=40  # Increase pool size
+    max_pool_connections=40 
 )
 
 
@@ -48,6 +45,8 @@ cache_table = dynamodb.Table('SummarizationCache')
 S3_BUCKET = 'pdf-sustainability-parser-bucket-west-2'
 REGION = 'us-west-2'
 s3 = boto3.client('s3', region_name=REGION)
+# Toggle PDF upload to S3 (set env UPLOAD_PDF_TO_S3=true to enable)
+UPLOAD_PDF_TO_S3 = os.getenv('UPLOAD_PDF_TO_S3', 'false').lower() == 'true'
 
 # Upload PDF to S3
 def upload_to_s3(file_bytes, s3_key):
@@ -153,7 +152,7 @@ def summarize_step1(chunk):
         ],
         inferenceConfig={
             "maxTokens": 150, 
-            "temperature": 0.2,
+            "temperature": 0,
         },
     )
     logger.info("Summarization Step 1 completed for a chunk.")
@@ -251,7 +250,7 @@ def summarize_step2(aggregated_summaries, category):
         ],
         inferenceConfig={
             "maxTokens": 300 if category == 4 else 400, 
-            "temperature": 0.2,
+            "temperature": 0,
         },
     )
 
@@ -368,15 +367,13 @@ def extract_text():
         download_time = time.time() - start_download
         logger.info(f"Downloaded PDF in {download_time:.4f} seconds.")
 
-        # Upload PDF to S3
+        # Prepare compressed PDF bytes for extraction (don't upload yet)
         compressed_response = compress_data(response.content)
         pdf_bytes = BytesIO(compressed_response)  # Original stream
         pdf_copy = BytesIO(compressed_response)  # Create a copy for reuse
         s3_key = 'uploads/input.pdf'
-        upload_time = time.time()
-        file_url = upload_to_s3(pdf_bytes, s3_key)
-        upload_duration = time.time() - upload_time
-        logger.info(f"Uploaded PDF to S3 in {upload_duration:.4f} seconds.")
+        file_url = None
+        upload_duration = 0.0
 
         # Extract text 
         start_extraction = time.time()
@@ -410,6 +407,18 @@ def extract_text():
                 "upload_time_seconds": upload_duration,
                 "extraction_time_seconds": extraction_time
             })
+
+        # Only upload the PDF to S3 after cache miss and optional flag enabled
+        if UPLOAD_PDF_TO_S3:
+            try:
+                upload_time = time.time()
+                # we created pdf_bytes earlier — rewind just in case
+                pdf_bytes.seek(0)
+                file_url = upload_to_s3(pdf_bytes, s3_key)
+                upload_duration = time.time() - upload_time
+                logger.info(f"Uploaded PDF to S3 in {upload_duration:.4f} seconds.")
+            except Exception as e:
+                logger.warning(f"Failed to upload PDF to S3: {e}")
 
         # Step 1: Summarize each chunk into single bullet points
         logger.info("Starting Summarization Step 1.")

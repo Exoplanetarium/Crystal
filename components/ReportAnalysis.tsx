@@ -57,60 +57,80 @@ const ReportAnalysis: FC<ReportProps> = ({ report }) => {
         return !section || section.trim() === '' || section.toLowerCase().includes('does not list') || section.toLowerCase().includes('not available') || section.toLowerCase().includes('no data');
     };
 
+    // Helper to detect whether the environment text contains Scope 1/2/3 entries
+    const hasEnvironmentScopes = (text: string) => {
+        if (!text) {
+            return false;
+        }
+        // Look for variations like "Scope 1", "Scope 2", "Scope 3" (case-insensitive)
+        const scopeRegex = /scope\s*1|scope\s*2|scope\s*3/i;
+        return scopeRegex.test(text);
+    };
+
     if (!goals && !environment && !certifications && !transparency) {
         return (
             <View style={styles.errorContainer}>
-                <Text style={styles.header} fontSize="$4">Sorry, this company has not yet reported for the {currentYear} fiscal year.</Text>
-                <Text style={styles.header} fontSize="$4">Please check back later!</Text>
+                <Text style={styles.header} fontSize="$5">Sorry, either the company does not exist (yet!), or this company has not yet reported for the {currentYear} fiscal year.</Text>
+                <Text style={styles.header} fontSize="$4" />
+                <Text style={styles.header} fontSize="$5">Please check back later!</Text>
             </View>
         );
     }
 
     return (
-        <ScrollView marginBlockEnd={150}>
+        <ScrollView marginBlockEnd={300}>
             <YGroup>
-                {loadedSections.has('goals') ? (
-                    isSectionEmpty(goals) ? (
-                        <EmptySection sectionName="goals" />
+                <YGroup.Item>
+                    {loadedSections.has('goals') ? (
+                        isSectionEmpty(goals) ? (
+                            <EmptySection sectionName="goals" />
+                        ) : (
+                            <Goals goals={goals} />
+                        )
                     ) : (
-                        <Goals goals={goals} />
-                    )
-                ) : (
-                    <Text>Loading Goals...</Text>
-                )}
+                        <Text>Loading Goals...</Text>
+                    )}
+                </YGroup.Item>
                 <Separator style={styles.seperator}/>
 
-                {loadedSections.has('environment') ? (
-                    isSectionEmpty(environment) ? (
-                        <EmptySection sectionName="environment data" />
+                <YGroup.Item>
+                    {loadedSections.has('environment') ? (
+                        // Consider environment empty if the text is empty/invalid OR if it doesn't contain Scope 1/2/3
+                        (isSectionEmpty(environment) || !hasEnvironmentScopes(environment)) ? (
+                            <EmptySection sectionName="environment data" />
+                        ) : (
+                            <Environment environment={environment} />
+                        )
                     ) : (
-                        <Environment environment={environment} />
-                    )
-                ) : (
-                    <Text>Loading Environment...</Text>
-                )}
+                        <Text>Loading Environment...</Text>
+                    )}
+                </YGroup.Item>
                 <Separator style={styles.seperator}/>
 
-                {loadedSections.has('certifications') ? (
-                    isSectionEmpty(certifications) ? (
-                        <EmptySection sectionName="certifications" />
+                <YGroup.Item>
+                    {loadedSections.has('certifications') ? (
+                        isSectionEmpty(certifications) ? (
+                            <EmptySection sectionName="certifications" />
+                        ) : (
+                            <Certifications certifications={certifications} />
+                        )
                     ) : (
-                        <Certifications certifications={certifications} />
-                    )
-                ) : (
-                    <Text>Loading Certifications...</Text>
-                )}
+                        <Text>Loading Certifications...</Text>
+                    )}
+                </YGroup.Item>
                 <Separator style={styles.seperator}/>
 
-                {loadedSections.has('transparency') ? (
-                    isSectionEmpty(transparency) ? (
-                        <EmptySection sectionName="transparency metrics" />
+                <YGroup.Item>
+                    {loadedSections.has('transparency') ? (
+                        isSectionEmpty(transparency) ? (
+                            <EmptySection sectionName="transparency metrics" />
+                        ) : (
+                            <Transparency transparency={transparency} />
+                        )
                     ) : (
-                        <Transparency transparency={transparency} />
-                    )
-                ) : (
-                    <Text>Loading Transparency...</Text>
-                )}
+                        <Text>Loading Transparency...</Text>
+                    )}
+                </YGroup.Item>
             </YGroup>
         </ScrollView>
     );

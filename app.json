@@ -13,6 +13,16 @@
       "backgroundColor": "#ffffff"
     }
   },
+  "ios": {
+    "bundleIdentifier": "com.exoplanet.crystal",
+    "adaptiveIcon": {
+      "foregroundImage": "./images/Crystal_LOGO.jpg",
+      "backgroundColor": "#ffffff"
+    },
+    "infoPlist": {
+      "ITSAppUsesNonExemptEncryption": false
+    }
+  },
   "plugins": [
     "expo-asset"
   ],

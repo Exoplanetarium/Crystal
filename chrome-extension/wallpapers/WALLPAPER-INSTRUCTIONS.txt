@@ -1,0 +1,15 @@
+// Placeholder for high sustainability wallpaper
+// REPLACE THIS FILE WITH YOUR ACTUAL IMAGE:
+// - high-sustainability.jpg (800x600px or larger)
+// - Green/nature theme (forests, solar panels, wind turbines)
+// - Keep under 500KB for performance
+
+// You can use:
+// 1. Stock photos from Unsplash/Pexels (search "green energy", "forest", "sustainability")
+// 2. AI image generators (DALL-E, Midjourney)
+// 3. Your own photography
+
+// Suggested prompts for AI:
+// "Lush green forest with sunlight, photorealistic, vibrant"
+// "Clean solar panel farm at sunset, modern sustainable energy"
+// "Beautiful nature landscape with trees and clear sky"

@@ -1,0 +1,377 @@
+#crystal-sustainability-widget {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 380px;
+  z-index: 676767677; 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  max-width: 380px;
+  contain: layout style;
+}
+
+/* Minimized state */
+.crystal-widget.minimized {
+  width: 56px !important;
+}
+
+.crystal-widget.minimized .crystal-toggle {
+  border-radius: 12px; 
+  padding: 4px;
+  justify-content: center;
+}
+
+.crystal-widget.minimized .crystal-label {
+  display: none;
+}
+
+.crystal-widget.minimized .crystal-content {
+  display: none;
+}
+
+/* Transitioning state - bar visible, content animating in/out */
+.crystal-widget.transitioning .crystal-toggle {
+  border-radius: 12px; 
+}
+
+.crystal-widget.transitioning .crystal-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* Toggle button - always visible */
+.crystal-toggle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px 12px 0 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  user-select: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.crystal-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.crystal-icon {
+  width: 25px;
+  height: 25px;
+  animation: pulse 2s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.crystal-widget.minimized .crystal-icon {
+  width: 38px;
+  height: 38px;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.crystal-label {
+  font-weight: 600;
+  font-size: 14px;
+  flex: 1;
+  transition: opacity 0.2s ease;
+}
+
+/* Content area - expandable/collapsible */
+.crystal-content {
+  background: white;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-height: 600px;
+  overflow-y: auto;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+/* Loading state */
+.crystal-loading {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.crystal-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 16px;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.crystal-loading p {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Rating container with wallpaper background */
+.crystal-rating-container {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+/* Overlay to ensure text readability over wallpaper */
+.crystal-rating-overlay {
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0.7) 0%, 
+    rgba(0, 0, 0, 0.5) 50%, 
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  padding: 24px;
+  color: white;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Rating header */
+.crystal-rating-header {
+  margin-bottom: 20px;
+}
+
+.crystal-rating-header h3 {
+  margin: 0 0 12px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  font-family: inherit;
+}
+
+.crystal-rating-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Score circle */
+.crystal-rating-score {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.crystal-score-circle {
+  width: 120px;
+  height: 120px;
+  border: 6px solid;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.crystal-score-number {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  color: white;
+}
+
+.crystal-score-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 4px;
+}
+
+/* Details section */
+.crystal-details {
+  margin: 24px 0;
+}
+
+.crystal-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.crystal-detail-icon {
+  font-size: 20px;
+}
+
+.crystal-detail-label {
+  flex: 1;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.crystal-detail-value {
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+}
+
+/* View Full Report button */
+.crystal-view-full {
+  width: 100%;
+  max-width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.crystal-view-full:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Error state */
+.crystal-error {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.crystal-error-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.crystal-error p {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0 0 20px 0;
+}
+
+.crystal-retry {
+  padding: 10px 24px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.crystal-retry:hover {
+  background: #667eea;
+}
+
+/* Full report view */
+.crystal-full-report {
+  padding: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.crystal-back-button {
+  padding: 8px 16px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background 0.2s ease;
+}
+
+.crystal-back-button:hover {
+  background: #e5e7eb;
+}
+
+.crystal-report-section {
+  margin-bottom: 24px;
+}
+
+.crystal-report-section h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crystal-report-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4b5563;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* Scrollbar styling */
+.crystal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.crystal-content::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.crystal-content::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.crystal-content::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  #crystal-sustainability-widget {
+    width: calc(100% - 40px);
+    right: 20px;
+  }
+}

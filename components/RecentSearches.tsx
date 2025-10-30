@@ -43,24 +43,33 @@ const RecentSearches: FC<RecentSearchesProps> = ({ onSelect, recentSearches, rec
 
 						)}
 						</Accordion.Trigger>
-						<Accordion.HeightAnimator animation="medium">
-							<Accordion.Content animation="medium" style={styles.accordionContent} exitStyle={styles.exitAnimation}>
-								<ScrollView style={styles.scrollContainer}>
-									<YGroup style={styles.searchContainer} paddingBlock="$3">
-										{recentCompanies.map((company, index) => (
-											<View key={index}>
-												<Button onPress={() => onSelect(recentSearches[index], company)} style={styles.card}>
-													<ListItem style={styles.cardContent}>
-														<Text style={styles.cardText} fontSize={'$3'}>{company}</Text>
-													</ListItem>
-												</Button>
-												<Separator style={styles.separator}/>
+						<Accordion.Content animation="medium" style={styles.accordionContent} exitStyle={styles.exitAnimation}>
+							<ScrollView style={styles.scrollContainer}>
+								<YGroup style={styles.searchContainer} paddingBlock="$3">
+									{recentCompanies.length === 0 ? (
+										<YGroup.Item>
+											<View>
+												<Text style={styles.emptyText}>No recent searches yet</Text>
+												<Text style={styles.emptyText}>Search to add items to your history</Text>
 											</View>
-										))}
-									</YGroup>
-								</ScrollView>
-							</Accordion.Content>
-						</Accordion.HeightAnimator>
+										</YGroup.Item>
+									) : (
+										recentCompanies.map((company, index) => (
+											<YGroup.Item key={`${company}-${index}`}>
+												<View key={index}>
+													<Button onPress={() => onSelect(recentSearches[index], company)} style={styles.card}>
+														<ListItem style={styles.cardContent}>
+															<Text style={styles.cardText} fontSize={'$3'}>{company}</Text>
+														</ListItem>
+													</Button>
+													<Separator style={styles.separator}/>
+												</View>
+											</YGroup.Item>
+										))
+									)}
+								</YGroup>
+							</ScrollView>
+						</Accordion.Content>
 					</Accordion.Item>
 				</Accordion>
 			</View>
@@ -127,6 +136,11 @@ const styles = StyleSheet.create({
 	},
 	exitAnimation: {
 		opacity: 0,
+	},
+	emptyText: {
+		color: '#ffffffb8',
+		textAlign: 'center',
+		fontStyle: 'italic',
 	},
 });
 

@@ -126,40 +126,43 @@ const Transparency: FC<TransparencyProps> = ({ transparency }) => {
   const { level, color } = getTransparencyLevel(score);
   return (
     <View style={styles.container}>
-      <Text style={styles.title} fontSize="$5" color="white" fontWeight={'bold'} marginStart={7}>Transparency</Text>
+      <Text style={styles.title} fontSize="$6" color="white" fontWeight={'bold'} marginStart={7}>Transparency</Text>
       <View style={styles.card}>
         <Text style={[styles.score, { color }]}>{score}%</Text>
         <Text style={[styles.level, { color }]}>{level}</Text>
       </View>
-      <YGroup style={styles.accordionContainer}>
-        <Accordion overflow="hidden" type="multiple">
+      <Accordion overflow="hidden" type="multiple">
+        <YGroup style={styles.accordionContainer}>
           {sections.map((section, index) => (
-            <Accordion.Item key={index} value={`section-${index}`}>
-              <Accordion.Trigger style={styles.listItem}>
-                {({
-                  open,
-                }: {
-                  open: boolean
-                }) => (
-                  <>
-                    <Text style={styles.sectionTitle} fontSize={'$3'} numberOfLines={1}>
-                      {section.title}
-                    </Text>
-                    <Square animation="quick" rotate={open ? '180deg' : '0deg'}>
-                        <ChevronDown size="$1" color={'white'}/>
-                    </Square>
-                  </>
-                )}
-              </Accordion.Trigger>
-              <Accordion.HeightAnimator animation="medium">
-                <Accordion.Content animation="medium" style={styles.contentContainer}>
-                  <Text style={styles.content}>{section.content}</Text>
-                </Accordion.Content>
-              </Accordion.HeightAnimator>
-            </Accordion.Item>
+            <YGroup.Item key={index}>
+              <Accordion.Item value={`section-${index}`}>
+                <Accordion.Trigger style={styles.listItem}>
+                  {({
+                    open,
+                  }: {
+                    open: boolean
+                  }) => (
+                    <>
+                      <Text style={styles.sectionTitle} fontSize={'$3'} numberOfLines={1}>
+                        {section.title}
+                      </Text>
+                      <Square animation="quick" rotate={open ? '180deg' : '0deg'}>
+                          <ChevronDown size="$1" color={'white'}/>
+                      </Square>
+                    </>
+                  )}
+                </Accordion.Trigger>
+                <Accordion.HeightAnimator animation="medium">
+                  <Accordion.Content animation="medium" style={styles.contentContainer}>
+                    <Text style={styles.content}>{section.content}</Text>
+                  </Accordion.Content>
+                </Accordion.HeightAnimator>
+              </Accordion.Item>
+            </YGroup.Item>
           ))}
-        </Accordion>
-      </YGroup>
+        </YGroup>
+      </Accordion>
+
     </View>
   );
 };

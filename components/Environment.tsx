@@ -316,7 +316,7 @@ const Environment: FC<EnvProps> = ({ environment }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text fontSize="$5" color="white" fontWeight={'bold'} marginStart={7}>Environment</Text>
+			<Text fontSize="$6" color="white" fontWeight={'bold'} marginStart={7}>Environment</Text>
 			{environment && envArray.length > 0 && (
 				<View style={styles.chartWrapper}>
 					{emissionsBarChart()}
