@@ -4,22 +4,14 @@
   "version": "1.0.0",
   "description": "See company sustainability ratings while you shop online",
   "permissions": [
-    "storage",
-    "activeTab"
-  ],
-  "host_permissions": [
-    "https://*/*",
-    "http://*/*"
+    "storage"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://*/*",
-        "http://*/*"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["content.js"],
       "css": ["widget.css"],
       "run_at": "document_idle"
@@ -30,13 +22,13 @@
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "128": "icons/icon128_padded.png"
     }
   },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "128": "icons/icon128_padded.png"
   },
   "web_accessible_resources": [
     {

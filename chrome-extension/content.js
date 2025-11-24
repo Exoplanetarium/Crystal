@@ -68,34 +68,34 @@ function getCompanyName() {
   return null;
 }
 
-// eslint-disable-next-line no-unused-vars
-function detectCompanyFromPage() {
-  // Try meta tags first
-  const ogSiteName = document.querySelector('meta[property="og:site_name"]');
-  if (ogSiteName) {
-    return ogSiteName.getAttribute('content');
-  }
 
-  const twitterSite = document.querySelector('meta[name="twitter:site"]');
-  if (twitterSite) {
-    return twitterSite.getAttribute('content').replace('@', '');
-  }
+// function detectCompanyFromPage() {
+//   // Try meta tags first
+//   const ogSiteName = document.querySelector('meta[property="og:site_name"]');
+//   if (ogSiteName) {
+//     return ogSiteName.getAttribute('content');
+//   }
 
-  // Try page title
-  const title = document.title;
-  const titleMatch = title.match(/^([^-|]+)/);
-  if (titleMatch) {
-    return titleMatch[1].trim();
-  }
+//   const twitterSite = document.querySelector('meta[name="twitter:site"]');
+//   if (twitterSite) {
+//     return twitterSite.getAttribute('content').replace('@', '');
+//   }
 
-  // Try logo alt text
-  const logo = document.querySelector('img[alt*="logo" i]');
-  if (logo) {
-    return logo.alt.replace(/logo/i, '').trim();
-  }
+//   // Try page title
+//   const title = document.title;
+//   const titleMatch = title.match(/^([^-|]+)/);
+//   if (titleMatch) {
+//     return titleMatch[1].trim();
+//   }
 
-  return null;
-}
+//   // Try logo alt text
+//   const logo = document.querySelector('img[alt*="logo" i]');
+//   if (logo) {
+//     return logo.alt.replace(/logo/i, '').trim();
+//   }
+
+//   return null;
+// }
 
 // Inject the collapsible widget
 function injectWidget(company) {
